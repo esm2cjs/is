@@ -1,28 +1,32 @@
 {
-	"name": "@sindresorhus/is",
+	"name": "@esm2cjs/is",
 	"version": "5.3.0",
-	"description": "Type check values",
+	"description": "Type check values. This is a fork of sindresorhus/is, but with CommonJS support.",
 	"license": "MIT",
-	"repository": "sindresorhus/is",
-	"funding": "https://github.com/sindresorhus/is?sponsor=1",
+	"repository": "esm2cjs/is",
+	"funding": "https://github.com/sponsors/AlCalzone",
 	"author": {
-		"name": "Sindre Sorhus",
-		"email": "sindresorhus@gmail.com",
-		"url": "https://sindresorhus.com"
+		"name": "Dominic Griesel",
+		"email": "d.griesel@gmx.net"
 	},
-	"type": "module",
-	"exports": "./dist/index.js",
-	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": "./build/esm/index.js",
+			"require": "./build/cjs/index.js"
+		},
+		"./package.json": "./package.json"
+	},
+	"types": "build/esm/index.d.ts",
 	"engines": {
 		"node": ">=14.16"
 	},
 	"scripts": {
-		"build": "del dist && tsc",
-		"test": "xo && ava",
-		"prepare": "npm run build"
+		"build": "del build/ && tsc",
+		"test": "xo && ava"
 	},
 	"files": [
-		"dist"
+		"build/esm/**/*.{js,d.ts,json}",
+		"build/cjs/**/*.{js,d.ts,json}"
 	],
 	"keywords": [
 		"type",
@@ -78,5 +82,23 @@
 			"@typescript-eslint/explicit-function-return-type": "off",
 			"@typescript-eslint/triple-slash-reference": "off"
 		}
-	}
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"main": "build/cjs/index.js",
+	"typesVersions": {
+		"*": {
+			"build/esm/index.d.ts": [
+				"build/esm/index.d.ts"
+			],
+			"build/cjs/index.d.ts": [
+				"build/esm/index.d.ts"
+			],
+			"*": [
+				"build/esm/*"
+			]
+		}
+	},
+	"module": "build/esm/index.js"
 }
