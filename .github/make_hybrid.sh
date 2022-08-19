@@ -34,10 +34,12 @@ PJSON=$(cat package.json | jq --tab '
 	| .exports["./package.json"] = "./package.json"
 	| .scripts["to-cjs"] = "esm2cjs --in build/esm --out build/cjs -t node12"
 	| .scripts.build = "del build/ && tsc"
+	| del(.scripts.prepare)
 ')
 echo "$PJSON" > package.json
 
 npm i
+npm run build
 
 npm i -D @alcalzone/esm2cjs
 npm run to-cjs
