@@ -1,6 +1,6 @@
 {
 	"name": "@esm2cjs/is",
-	"version": "5.3.0",
+	"version": "5.4.0",
 	"description": "Type check values. This is a fork of sindresorhus/is, but with CommonJS support.",
 	"license": "MIT",
 	"repository": "esm2cjs/is",
@@ -16,13 +16,12 @@
 		},
 		"./package.json": "./package.json"
 	},
-	"types": "build/esm/index.d.ts",
 	"engines": {
 		"node": ">=14.16"
 	},
 	"scripts": {
 		"build": "del build/ && tsc",
-		"test": "xo && ava"
+		"test": "tsc --noEmit && xo && ava"
 	},
 	"files": [
 		"build/esm/**/*.{js,d.ts,json}",
@@ -54,18 +53,18 @@
 	],
 	"devDependencies": {
 		"@sindresorhus/tsconfig": "^3.0.1",
-		"@types/jsdom": "^16.2.15",
-		"@types/node": "^18.0.6",
+		"@types/jsdom": "^21.1.1",
+		"@types/node": "^20.2.5",
 		"@types/zen-observable": "^0.8.3",
-		"ava": "^4.3.1",
+		"ava": "^5.3.0",
 		"del-cli": "^5.0.0",
-		"jsdom": "^20.0.0",
-		"rxjs": "^7.5.6",
+		"jsdom": "^20.0.1",
+		"rxjs": "^7.8.1",
 		"tempy": "^3.0.0",
 		"ts-node": "^10.9.1",
-		"typescript": "~4.7.4",
-		"xo": "^0.51.0",
-		"zen-observable": "^0.8.15"
+		"typescript": "^5.0.4",
+		"xo": "^0.54.2",
+		"zen-observable": "^0.10.0"
 	},
 	"sideEffects": false,
 	"ava": {
@@ -76,17 +75,11 @@
 			"--loader=ts-node/esm"
 		]
 	},
-	"xo": {
-		"rules": {
-			"@typescript-eslint/no-empty-function": "off",
-			"@typescript-eslint/explicit-function-return-type": "off",
-			"@typescript-eslint/triple-slash-reference": "off"
-		}
-	},
 	"publishConfig": {
 		"access": "public"
 	},
 	"main": "build/cjs/index.js",
+	"types": "build/esm/index.d.ts",
 	"typesVersions": {
 		"*": {
 			"build/esm/index.d.ts": [

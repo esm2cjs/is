@@ -105,20 +105,34 @@ function is(value: unknown): TypeName {
 	}
 
 	switch (typeof value) {
-		case 'undefined':
+		case 'undefined': {
 			return 'undefined';
-		case 'string':
+		}
+
+		case 'string': {
 			return 'string';
-		case 'number':
+		}
+
+		case 'number': {
 			return Number.isNaN(value) ? 'NaN' : 'number';
-		case 'boolean':
+		}
+
+		case 'boolean': {
 			return 'boolean';
-		case 'function':
+		}
+
+		case 'function': {
 			return 'Function';
-		case 'bigint':
+		}
+
+		case 'bigint': {
 			return 'bigint';
-		case 'symbol':
+		}
+
+		case 'symbol': {
 			return 'symbol';
+		}
+
 		default:
 	}
 
@@ -167,7 +181,7 @@ is.boolean = (value: unknown): value is boolean => value === true || value === f
 
 is.symbol = isOfType<symbol>('symbol');
 
-is.numericString = (value: unknown): value is string =>
+is.numericString = (value: unknown): value is `${number}` =>
 	is.string(value) && !is.emptyStringOrWhitespace(value) && !Number.isNaN(Number(value));
 
 is.array = <T = unknown>(value: unknown, assertion?: (value: T) => value is T): value is T[] => {
@@ -179,6 +193,7 @@ is.array = <T = unknown>(value: unknown, assertion?: (value: T) => value is T): 
 		return true;
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 	return value.every(element => assertion(element));
 };
 
@@ -251,7 +266,8 @@ is.sharedArrayBuffer = isObjectOfType<SharedArrayBuffer>('SharedArrayBuffer');
 
 is.dataView = isObjectOfType<DataView>('DataView');
 
-is.enumCase = <T = unknown>(value: unknown, targetEnum: T) => Object.values(targetEnum).includes(value as string);
+// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+is.enumCase = <T = unknown>(value: unknown, targetEnum: T): boolean => Object.values(targetEnum as any).includes(value as string);
 
 is.directInstanceOf = <T>(instance: unknown, class_: Class<T>): instance is T => Object.getPrototypeOf(instance) === class_.prototype;
 
@@ -298,10 +314,10 @@ is.plainObject = <Value = unknown>(value: unknown): value is Record<PropertyKey,
 
 is.typedArray = (value: unknown): value is TypedArray => isTypedArrayName(getObjectType(value));
 
-export interface ArrayLike<T> {
+export type ArrayLike<T> = {
 	readonly [index: number]: T;
 	readonly length: number;
-}
+};
 
 const isValidLength = (value: unknown): value is number => is.safeInteger(value) && value >= 0;
 is.arrayLike = <T = unknown>(value: unknown): value is ArrayLike<T> => !is.nullOrUndefined(value) && !is.function_(value) && isValidLength((value as ArrayLike<T>).length);
@@ -354,9 +370,9 @@ is.observable = (value: unknown): value is ObservableLike => {
 	return false;
 };
 
-export interface NodeStream extends NodeJS.EventEmitter {
+export type NodeStream = {
 	pipe<T extends NodeJS.WritableStream>(destination: T, options?: {end?: boolean}): T;
-}
+} & NodeJS.EventEmitter;
 
 is.nodeStream = (value: unknown): value is NodeStream => is.object(value) && is.function_((value as NodeStream).pipe) && !is.observable(value);
 
@@ -490,7 +506,7 @@ export const enum AssertionTypeDescription {
 }
 
 // Type assertions have to be declared with an explicit type.
-interface Assert {
+type Assert = {
 	// Unknowns.
 	undefined: (value: unknown) => asserts value is undefined;
 	string: (value: unknown) => asserts value is string;
@@ -502,7 +518,7 @@ interface Assert {
 	class_: (value: unknown) => asserts value is Class;
 	boolean: (value: unknown) => asserts value is boolean;
 	symbol: (value: unknown) => asserts value is symbol;
-	numericString: (value: unknown) => asserts value is string;
+	numericString: (value: unknown) => asserts value is `${number}`;
 	array: <T = unknown>(value: unknown, assertion?: (element: unknown) => asserts element is T) => asserts value is T[];
 	buffer: (value: unknown) => asserts value is Buffer;
 	blob: (value: unknown) => asserts value is Blob;
@@ -585,7 +601,7 @@ interface Assert {
 	// Variadic functions.
 	any: (predicate: Predicate | Predicate[], ...values: unknown[]) => void | never;
 	all: (predicate: Predicate, ...values: unknown[]) => void | never;
-}
+};
 
 /* eslint-disable @typescript-eslint/no-confusing-void-expression */
 export const assert: Assert = {
@@ -600,7 +616,7 @@ export const assert: Assert = {
 	class_: (value: unknown): asserts value is Class => assertType(is.class_(value), AssertionTypeDescription.class_, value),
 	boolean: (value: unknown): asserts value is boolean => assertType(is.boolean(value), 'boolean', value),
 	symbol: (value: unknown): asserts value is symbol => assertType(is.symbol(value), 'symbol', value),
-	numericString: (value: unknown): asserts value is string => assertType(is.numericString(value), AssertionTypeDescription.numericString, value),
+	numericString: (value: unknown): asserts value is `${number}` => assertType(is.numericString(value), AssertionTypeDescription.numericString, value),
 	array: <T = unknown>(value: unknown, assertion?: (element: unknown) => asserts element is T): asserts value is T[] => { // eslint-disable-line object-shorthand
 		const assert: (condition: boolean, description: string, value: unknown) => asserts condition = assertType;
 		assert(is.array(value), 'Array', value);

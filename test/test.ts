@@ -1,14 +1,21 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import {Buffer} from 'node:buffer';
 import fs from 'node:fs';
 import net from 'node:net';
 import Stream from 'node:stream';
 import {inspect} from 'node:util';
-import test, {ExecutionContext} from 'ava';
+import test, {type ExecutionContext} from 'ava';
 import {JSDOM} from 'jsdom';
 import {Subject, Observable} from 'rxjs';
 import {temporaryFile} from 'tempy';
 import ZenObservable from 'zen-observable';
-import is, {assert, AssertionTypeDescription, Primitive, TypedArray, TypeName} from '../source/index.js';
+import is, {
+	assert,
+	AssertionTypeDescription,
+	type Primitive,
+	type TypedArray,
+	type TypeName,
+} from '../source/index.js';
 
 class PromiseSubclassFixture<T> extends Promise<T> {}
 class ErrorSubclassFixture extends Error {}
@@ -17,13 +24,13 @@ const {window} = new JSDOM();
 const {document} = window;
 const createDomElement = (element: string) => document.createElement(element);
 
-interface Test {
+type Test = {
 	assert: (...args: any[]) => void | never;
 	fixtures: unknown[];
 	typename?: TypeName;
 	typeDescription?: AssertionTypeDescription | TypeName;
 	is(value: unknown): boolean;
-}
+};
 
 const invertAssertThrow = (description: string, fn: () => void | never, value: unknown): void | never => {
 	const expectedAssertErrorMessage = `Expected value which is \`${description}\`, received value of type \`${is(value)}\`.`;
@@ -596,7 +603,7 @@ const testType = (t: ExecutionContext, type: string, exclude?: string[]) => {
 
 		for (const fixture of fixtures) {
 			assertIs(testIs(fixture), `Value: ${inspect(fixture)}`);
-			const valueType = typeDescription ? typeDescription : typename;
+			const valueType = typeDescription ?? typename;
 
 			if (isTypeUnderTest) {
 				t.notThrows(() => {
@@ -1435,6 +1442,17 @@ test('is.nonEmptyArray', t => {
 	t.throws(() => {
 		assert.nonEmptyArray(new Array()); // eslint-disable-line @typescript-eslint/no-array-constructor
 	});
+
+	// https://github.com/sindresorhus/is/issues/174
+	// {
+	// 	const strings = ['foo', 'bar']
+	// 	const function_ = (value: string) => value;
+
+	// 	if (is.nonEmptyArray(strings)) {
+	// 		const value = strings[0]
+	// 		function_(value);
+	// 	}
+	// }
 });
 
 test('is.emptyString', t => {
@@ -1593,6 +1611,7 @@ test('is.any', t => {
 	t.false(is.any([is.boolean, is.number], 'unicorns', [], new Map()));
 
 	t.throws(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		is.any(null as any, true);
 	});
 
@@ -1617,6 +1636,7 @@ test('is.any', t => {
 	});
 
 	t.throws(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		assert.any(null as any, true);
 	});
 
@@ -1655,6 +1675,7 @@ test('is.all', t => {
 	t.true(is.all(is.array, ['1'], ['2']));
 
 	t.throws(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		is.all(null as any, true);
 	});
 
@@ -1679,6 +1700,7 @@ test('is.all', t => {
 	});
 
 	t.throws(() => {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		assert.all(null as any, true);
 	});
 

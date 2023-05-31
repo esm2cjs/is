@@ -104,20 +104,27 @@ function is(value) {
     return "null";
   }
   switch (typeof value) {
-    case "undefined":
+    case "undefined": {
       return "undefined";
-    case "string":
+    }
+    case "string": {
       return "string";
-    case "number":
+    }
+    case "number": {
       return Number.isNaN(value) ? "NaN" : "number";
-    case "boolean":
+    }
+    case "boolean": {
       return "boolean";
-    case "function":
+    }
+    case "function": {
       return "Function";
-    case "bigint":
+    }
+    case "bigint": {
       return "bigint";
-    case "symbol":
+    }
+    case "symbol": {
       return "symbol";
+    }
     default:
   }
   if (is.observable(value)) {
