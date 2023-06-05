@@ -1,6 +1,6 @@
 {
 	"name": "@esm2cjs/is",
-	"version": "5.4.0",
+	"version": "5.4.1",
 	"description": "Type check values. This is a fork of sindresorhus/is, but with CommonJS support.",
 	"license": "MIT",
 	"repository": "esm2cjs/is",
@@ -16,6 +16,7 @@
 		},
 		"./package.json": "./package.json"
 	},
+	"types": "build/esm/index.d.ts",
 	"engines": {
 		"node": ">=14.16"
 	},
@@ -79,7 +80,6 @@
 		"access": "public"
 	},
 	"main": "build/cjs/index.js",
-	"types": "build/esm/index.d.ts",
 	"typesVersions": {
 		"*": {
 			"build/esm/index.d.ts": [
