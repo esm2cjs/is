@@ -24,6 +24,8 @@ const {window} = new JSDOM();
 const {document} = window;
 const createDomElement = (element: string) => document.createElement(element);
 
+const structuredClone = globalThis.structuredClone ?? (x => x);
+
 type Test = {
 	assert: (...args: any[]) => void | never;
 	fixtures: unknown[];
@@ -487,6 +489,9 @@ const types = new Map<string, Test>([
 			{x: 1},
 			Object.create(null),
 			new Object(), // eslint-disable-line no-new-object
+			structuredClone({x: 1}),
+			structuredClone(Object.create(null)),
+			structuredClone(new Object()), // eslint-disable-line no-new-object
 		],
 		typename: 'Object',
 		typeDescription: AssertionTypeDescription.plainObject,
@@ -638,6 +643,82 @@ test('is.string', t => {
 
 test('is.number', t => {
 	testType(t, 'number', ['integer', 'safeInteger', 'infinite']);
+});
+
+test('is.positiveNumber', t => {
+	t.true(is.positiveNumber(6));
+	t.true(is.positiveNumber(1.4));
+	t.true(is.positiveNumber(Number.POSITIVE_INFINITY));
+
+	t.notThrows(() => {
+		assert.positiveNumber(6);
+	});
+	t.notThrows(() => {
+		assert.positiveNumber(1.4);
+	});
+	t.notThrows(() => {
+		assert.positiveNumber(Number.POSITIVE_INFINITY);
+	});
+
+	t.false(is.positiveNumber(0));
+	t.false(is.positiveNumber(-0));
+	t.false(is.positiveNumber(-6));
+	t.false(is.positiveNumber(-1.4));
+	t.false(is.positiveNumber(Number.NEGATIVE_INFINITY));
+
+	t.throws(() => {
+		assert.positiveNumber(0);
+	});
+	t.throws(() => {
+		assert.positiveNumber(-0);
+	});
+	t.throws(() => {
+		assert.positiveNumber(-6);
+	});
+	t.throws(() => {
+		assert.positiveNumber(-1.4);
+	});
+	t.throws(() => {
+		assert.positiveNumber(Number.NEGATIVE_INFINITY);
+	});
+});
+
+test('is.negativeNumber', t => {
+	t.true(is.negativeNumber(-6));
+	t.true(is.negativeNumber(-1.4));
+	t.true(is.negativeNumber(Number.NEGATIVE_INFINITY));
+
+	t.notThrows(() => {
+		assert.negativeNumber(-6);
+	});
+	t.notThrows(() => {
+		assert.negativeNumber(-1.4);
+	});
+	t.notThrows(() => {
+		assert.negativeNumber(Number.NEGATIVE_INFINITY);
+	});
+
+	t.false(is.negativeNumber(0));
+	t.false(is.negativeNumber(-0));
+	t.false(is.negativeNumber(6));
+	t.false(is.negativeNumber(1.4));
+	t.false(is.negativeNumber(Number.POSITIVE_INFINITY));
+
+	t.throws(() => {
+		assert.negativeNumber(0);
+	});
+	t.throws(() => {
+		assert.negativeNumber(-0);
+	});
+	t.throws(() => {
+		assert.negativeNumber(6);
+	});
+	t.throws(() => {
+		assert.negativeNumber(1.4);
+	});
+	t.throws(() => {
+		assert.negativeNumber(Number.POSITIVE_INFINITY);
+	});
 });
 
 test('is.bigint', t => {
@@ -1443,16 +1524,65 @@ test('is.nonEmptyArray', t => {
 		assert.nonEmptyArray(new Array()); // eslint-disable-line @typescript-eslint/no-array-constructor
 	});
 
-	// https://github.com/sindresorhus/is/issues/174
-	// {
-	// 	const strings = ['foo', 'bar']
-	// 	const function_ = (value: string) => value;
+	{
+		const strings = ['🦄', 'unicorn'];
+		const function_ = (value: string) => value;
 
-	// 	if (is.nonEmptyArray(strings)) {
-	// 		const value = strings[0]
-	// 		function_(value);
-	// 	}
-	// }
+		if (is.nonEmptyArray(strings)) {
+			const value = strings[0];
+			function_(value);
+		}
+	}
+
+	{
+		const mixed = ['🦄', 'unicorn', 1, 2];
+		const function_ = (value: string | number) => value;
+
+		if (is.nonEmptyArray(mixed)) {
+			const value = mixed[0];
+			function_(value);
+		}
+	}
+
+	{
+		const arrays = [['🦄'], ['unicorn']];
+		const function_ = (value: string[]) => value;
+
+		if (is.nonEmptyArray(arrays)) {
+			const value = arrays[0];
+			function_(value);
+		}
+	}
+
+	{
+		const strings = ['🦄', 'unicorn'];
+		const function_ = (value: string) => value;
+
+		assert.nonEmptyArray(strings);
+
+		const value = strings[0];
+		function_(value);
+	}
+
+	{
+		const mixed = ['🦄', 'unicorn', 1, 2];
+		const function_ = (value: string | number) => value;
+
+		assert.nonEmptyArray(mixed);
+
+		const value = mixed[0];
+		function_(value);
+	}
+
+	{
+		const arrays = [['🦄'], ['unicorn']];
+		const function_ = (value: string[]) => value;
+
+		assert.nonEmptyArray(arrays);
+
+		const value = arrays[0];
+		function_(value);
+	}
 });
 
 test('is.emptyString', t => {

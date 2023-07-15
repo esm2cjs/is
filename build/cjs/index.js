@@ -149,6 +149,8 @@ is.undefined = isOfType("undefined");
 is.string = isOfType("string");
 const isNumberType = isOfType("number");
 is.number = (value) => isNumberType(value) && !is.nan(value);
+is.positiveNumber = (value) => is.number(value) && value > 0;
+is.negativeNumber = (value) => is.number(value) && value < 0;
 is.bigint = isOfType("bigint");
 is.function_ = isOfType("function");
 is.null_ = (value) => value === null;
@@ -314,6 +316,8 @@ const assert = {
   undefined: (value) => assertType(is.undefined(value), "undefined", value),
   string: (value) => assertType(is.string(value), "string", value),
   number: (value) => assertType(is.number(value), "number", value),
+  positiveNumber: (value) => assertType(is.positiveNumber(value), "positive number", value),
+  negativeNumber: (value) => assertType(is.negativeNumber(value), "negative number", value),
   bigint: (value) => assertType(is.bigint(value), "bigint", value),
   function_: (value) => assertType(is.function_(value), "Function", value),
   null_: (value) => assertType(is.null_(value), "null", value),

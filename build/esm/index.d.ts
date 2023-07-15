@@ -13,6 +13,8 @@ declare namespace is {
     var undefined: (value: unknown) => value is undefined;
     var string: (value: unknown) => value is string;
     var number: (value: unknown) => value is number;
+    var positiveNumber: (value: unknown) => value is number;
+    var negativeNumber: (value: unknown) => value is number;
     var bigint: (value: unknown) => value is bigint;
     var function_: (value: unknown) => value is Function;
     var null_: (value: unknown) => value is null;
@@ -78,7 +80,7 @@ declare namespace is {
     var evenInteger: (value: number) => value is number;
     var oddInteger: (value: number) => value is number;
     var emptyArray: (value: unknown) => value is never[];
-    var nonEmptyArray: (value: unknown) => value is [unknown, ...unknown[]];
+    var nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => value is T extends Item[] ? [Item, ...Item[]] : T;
     var emptyString: (value: unknown) => value is "";
     var emptyStringOrWhitespace: (value: unknown) => value is string;
     var nonEmptyString: (value: unknown) => value is string;
@@ -139,6 +141,8 @@ export declare const enum AssertionTypeDescription {
     nonEmptyMap = "non-empty map",
     evenInteger = "even integer",
     oddInteger = "odd integer",
+    positiveNumber = "positive number",
+    negativeNumber = "negative number",
     directInstanceOf = "T",
     inRange = "in range",
     any = "predicate returns truthy for any value",
@@ -148,6 +152,8 @@ type Assert = {
     undefined: (value: unknown) => asserts value is undefined;
     string: (value: unknown) => asserts value is string;
     number: (value: unknown) => asserts value is number;
+    positiveNumber: (value: unknown) => asserts value is number;
+    negativeNumber: (value: unknown) => asserts value is number;
     bigint: (value: unknown) => asserts value is bigint;
     function_: (value: unknown) => asserts value is Function;
     null_: (value: unknown) => asserts value is null;
@@ -209,7 +215,7 @@ type Assert = {
     nodeStream: (value: unknown) => asserts value is NodeStream;
     infinite: (value: unknown) => asserts value is number;
     emptyArray: (value: unknown) => asserts value is never[];
-    nonEmptyArray: (value: unknown) => asserts value is [unknown, ...unknown[]];
+    nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => asserts value is (T extends Item[] ? [Item, ...Item[]] : T);
     emptyString: (value: unknown) => asserts value is '';
     emptyStringOrWhitespace: (value: unknown) => asserts value is string;
     nonEmptyString: (value: unknown) => asserts value is string;
