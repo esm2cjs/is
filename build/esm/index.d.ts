@@ -64,7 +64,7 @@ declare namespace is {
     var urlInstance: (value: unknown) => value is URL;
     var urlString: (value: unknown) => value is string;
     var truthy: <T>(value: Falsy | T) => value is T;
-    var falsy: <T>(value: Falsy | T) => value is Falsy;
+    var falsy: (value: unknown) => value is Falsy;
     var nan: (value: unknown) => boolean;
     var primitive: (value: unknown) => value is Primitive;
     var integer: (value: unknown) => value is number;
@@ -201,9 +201,9 @@ type Assert = {
     enumCase: <T = unknown>(value: unknown, targetEnum: T) => asserts value is T[keyof T];
     urlInstance: (value: unknown) => asserts value is URL;
     urlString: (value: unknown) => asserts value is string;
-    truthy: (value: unknown) => asserts value is unknown;
-    falsy: (value: unknown) => asserts value is unknown;
-    nan: (value: unknown) => asserts value is unknown;
+    truthy: <T>(value: T | Falsy) => asserts value is T;
+    falsy: (value: unknown) => asserts value is Falsy;
+    nan: (value: unknown) => asserts value is number;
     primitive: (value: unknown) => asserts value is Primitive;
     integer: (value: unknown) => asserts value is number;
     safeInteger: (value: unknown) => asserts value is number;
