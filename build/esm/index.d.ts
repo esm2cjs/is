@@ -80,7 +80,7 @@ declare namespace is {
     var evenInteger: (value: number) => value is number;
     var oddInteger: (value: number) => value is number;
     var emptyArray: (value: unknown) => value is never[];
-    var nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => value is T extends Item[] ? [Item, ...Item[]] : T;
+    var nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => value is [Item, ...Item[]];
     var emptyString: (value: unknown) => value is "";
     var emptyStringOrWhitespace: (value: unknown) => value is string;
     var nonEmptyString: (value: unknown) => value is string;
@@ -215,7 +215,7 @@ type Assert = {
     nodeStream: (value: unknown) => asserts value is NodeStream;
     infinite: (value: unknown) => asserts value is number;
     emptyArray: (value: unknown) => asserts value is never[];
-    nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => asserts value is (T extends Item[] ? [Item, ...Item[]] : T);
+    nonEmptyArray: <T = unknown, Item = unknown>(value: T | Item[]) => asserts value is [Item, ...Item[]];
     emptyString: (value: unknown) => asserts value is '';
     emptyStringOrWhitespace: (value: unknown) => asserts value is string;
     nonEmptyString: (value: unknown) => asserts value is string;

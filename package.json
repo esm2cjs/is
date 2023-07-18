@@ -1,6 +1,6 @@
 {
 	"name": "@esm2cjs/is",
-	"version": "5.5.1",
+	"version": "5.5.2",
 	"description": "Type check values. This is a fork of sindresorhus/is, but with CommonJS support.",
 	"license": "MIT",
 	"repository": "esm2cjs/is",
