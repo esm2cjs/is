@@ -1,6 +1,6 @@
 {
 	"name": "@esm2cjs/is",
-	"version": "5.5.2",
+	"version": "5.6.0",
 	"description": "Type check values. This is a fork of sindresorhus/is, but with CommonJS support.",
 	"license": "MIT",
 	"repository": "esm2cjs/is",
@@ -59,6 +59,7 @@
 		"@types/zen-observable": "^0.8.3",
 		"ava": "^5.3.0",
 		"del-cli": "^5.0.0",
+		"expect-type": "^0.16.0",
 		"jsdom": "^20.0.1",
 		"rxjs": "^7.8.1",
 		"tempy": "^3.0.0",
